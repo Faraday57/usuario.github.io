@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Facturación - Inventario Pro</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">📦</div>
+      <div class="brand-text">
+        <h2>Inventario Pro</h2>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="menu.html">🏠 Menú Principal</a>
+      <a href="inventario.html">📦 Inventario</a>
+      <a href="stock.html">📊 Stock</a>
+      <a href="facturacion.html" class="active">🧾 Facturación</a>
+      <a href="reportes.html">📑 Reportes</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button id="btnDark" class="dark-toggle">🌙</button>
+      <button id="btnLogout" class="logout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <h1>Facturación</h1>
+      <p class="lead">Genera facturas y controla tus ventas</p>
+    </header>
+
+    <section class="card form-card">
+      <h3>Agregar al Carrito</h3>
+      <div class="form-row">
+        <select id="selProducto"></select>
+        <input id="cantVenta" type="number" placeholder="Cantidad" min="1" />
+        <button id="btnAddCarrito" class="btn primary">Agregar al Carrito</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Carrito de Compras</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody id="tablaFactura"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:16px">
+        <button id="btnGenerar" class="btn primary">📄 Generar Factura (PDF)</button>
+      </div>
+      <p id="mensaje" style="margin-top:12px;color:#00b894;font-weight:600;"></p>
+    </section>
+  </main>
+
+  <script src="inventario.js"></script>
+  <script src="facturacion.js"></script>
+  <script src="global.js"></script>
+</body>
+</html>

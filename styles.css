@@ -1,0 +1,515 @@
+/* ==========================================================================
+   Estilo Profesional - Glassmorphism Azul
+   ========================================================================== */
+
+:root {
+  /* Paleta de Colores - Modo Claro */
+  --bg-grad: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+  --accent: #00aaff;
+  --accent-hover: #34c0ff;
+  --text-primary: #f0f8ff;
+  --text-muted: rgba(240, 248, 255, 0.7);
+  
+  /* Estilos Glass */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+  --glass-blur: blur(10px);
+  
+  /* Colores de Estado */
+  --success: #2ecc71;
+  --warning: #f1c40f;
+  --danger: #e74c3c;
+  --danger-hover: #c0392b;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-grad);
+  background-attachment: fixed; /* Mantiene el gradiente fijo al hacer scroll */
+  color: var(--text-primary);
+  display: flex;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+.sidebar {
+  width: 240px; /* Un poco más ancho para mejor espaciado */
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur); /* Soporte para Safari */
+  border-right: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  color: var(--text-primary);
+  padding: 24px;
+  position: fixed;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.brand .logo {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.brand-text h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.brand-text small {
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+.nav a {
+  display: flex; /* Para alinear íconos si los hubiera */
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin: 8px 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav a.active,
+.nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(8px);
+  font-weight: 500;
+}
+
+.sidebar-bottom {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  /* margin-top: auto; */
+  padding-top: 16px;
+  border-top: var(--glass-border);
+}
+
+.dark-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: var(--glass-border);
+  color: var(--text-primary);
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dark-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.logout {
+  background: var(--danger);
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  flex-grow: 1; /* Ocupa el espacio restante */
+  text-align: center;
+}
+
+.logout:hover {
+  background: var(--danger-hover);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+/* ==========================================================================
+   Contenido Principal
+   ========================================================================== */
+.content {
+  margin-left: 264px; /* Ajustado al padding del sidebar */
+  padding: 32px;
+  flex: 1;
+}
+
+.topbar {
+  margin-bottom: 24px;
+}
+
+.topbar h1 {
+  margin: 0 0 8px 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.lead {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  margin-bottom: 24px;
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2); /* Fondo oscuro sutil para contraste */
+  border-radius: 12px;
+  border: var(--glass-border);
+}
+
+.panel h3 {
+  margin-top: 0;
+  color: var(--text-primary);
+}
+
+.panel p {
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  background: var(--accent);
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  padding: 4px 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  transform: scale(1.2);
+  color: var(--accent);
+}
+
+
+/* ==========================================================================
+   Formularios
+   ========================================================================== */
+.form-card {
+  background: transparent; /* Hereda el estilo de tarjeta glass */
+}
+
+.form-card h3 {
+  color: var(--text-primary);
+}
+
+input,
+select {
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(0, 170, 255, 0.2);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.form-grid button {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   Tablas
+   ========================================================================== */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: rgba(0, 170, 255, 0.2);
+}
+
+th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-primary);
+}
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.95rem;
+}
+
+tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   Alerta de Stock Bajo (NUEVO)
+   ========================================================================== */
+tr.stock-critico {
+  background: rgba(231, 76, 60, 0.25) !important;
+  border-left: 4px solid var(--danger);
+  animation: pulseWarning 2s ease-in-out infinite;
+}
+
+tr.stock-critico:hover {
+  background: rgba(231, 76, 60, 0.35) !important;
+}
+
+tr.stock-critico td {
+  border-bottom-color: rgba(231, 76, 60, 0.3);
+}
+
+.alerta-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  border-radius: 8px;
+  color: #ffc2bc;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+@keyframes pulseWarning {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(231, 76, 60, 0);
+  }
+}
+
+/* ==========================================================================
+   Badges (Etiquetas de estado)
+   ========================================================================== */
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.badge-alto {
+  background-color: rgba(46, 204, 113, 0.15);
+  border-color: rgba(46, 204, 113, 0.5);
+  color: #c8ffe0;
+}
+
+.badge-medio {
+  background-color: rgba(241, 196, 15, 0.15);
+  border-color: rgba(241, 196, 15, 0.5);
+  color: #fffacd;
+}
+
+.badge-bajo {
+  background-color: rgba(231, 76, 60, 0.15);
+  border-color: rgba(231, 76, 60, 0.5);
+  color: #ffc2bc;
+}
+
+.badge-sin {
+  background-color: rgba(149, 165, 166, 0.15);
+  border-color: rgba(149, 165, 166, 0.5);
+  color: #ecf0f1;
+}
+
+/* ==========================================================================
+   Login
+   ========================================================================== */
+.login-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: var(--bg-grad);
+  background-attachment: fixed;
+}
+
+.login-container {
+  width: 380px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.login-container h1 {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  box-sizing: border-box;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   Dark Mode
+   ========================================================================== */
+body.dark {
+  --bg-grad: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+  --accent: #1e90ff; /* Dodger Blue */
+  --accent-hover: #4ca8ff;
+  --text-primary: #e6f1ff;
+  --text-muted: rgba(230, 241, 255, 0.65);
+  
+  --glass-bg: rgba(0, 0, 0, 0.2);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* No se necesitan más sobreescrituras porque todo usa variables CSS */
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media(max-width: 900px) {
+  body {
+    flex-direction: column;
+  }
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    border-right: none;
+    border-bottom: var(--glass-border);
+  }
+  .content {
+    margin-left: 0;
+    padding: 16px;
+  }
+  .grid-2, .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-grid input:nth-child(3) {
+    grid-column: 1;
+  }
+}
+
+@media(max-width:1200px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-grid input:nth-child(3),
+  .form-grid button {
+    grid-column: 1 / -1;
+  }
+}

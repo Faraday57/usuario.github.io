@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Facturación - Inventario Pro</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <!-- Estilos para impresión -->
+  <style>
+    @media print {
+      /* Ocultar todo excepto la factura al imprimir */
+      body * {
+        visibility: hidden;
+      }
+      
+      #facturaImpresion, #facturaImpresion * {
+        visibility: visible;
+      }
+      
+      #facturaImpresion {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      
+      /* Ocultar botones en impresión */
+      .no-print {
+        display: none !important;
+      }
+    }
+    
+    /* Estilos para la vista previa de factura */
+    #facturaImpresion {
+      display: none;
+      background: white;
+      color: #000;
+      padding: 40px;
+      max-width: 800px;
+      margin: 20px auto;
+      border: 2px solid #333;
+      font-family: 'Courier New', monospace;
+    }
+    
+    #facturaImpresion.visible {
+      display: block;
+    }
+    
+    .factura-header {
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .factura-header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #000;
+    }
+    
+    .factura-info {
+      margin-bottom: 20px;
+    }
+    
+    .factura-info p {
+      margin: 5px 0;
+      color: #000;
+    }
+    
+    .factura-tabla {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    .factura-tabla th,
+    .factura-tabla td {
+      border: 1px solid #000;
+      padding: 10px;
+      text-align: left;
+      color: #000;
+    }
+    
+    .factura-tabla th {
+      background: #f0f0f0;
+      font-weight: bold;
+    }
+    
+    .factura-total {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #000;
+      color: #000;
+    }
+    
+    .factura-footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #000;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">📦</div>
+      <div class="brand-text">
+        <h2>Inventario Pro</h2>
+      </div>
+    </div>
+    
+    <nav class="nav">
+      <a href="menu.html">🏠 Menú Principal</a>
+      <a href="inventario.html">📦 Inventario</a>
+      <a href="stock.html">📊 Stock</a>
+      <a href="facturacion.html" class="active">🧾 Facturación</a>
+      <a href="reportes.html">📑 Reportes</a>
+    </nav>
+    
+    <div class="sidebar-bottom">
+      <button id="btnDark" class="dark-toggle">🌙</button>
+      <button id="btnLogout" class="logout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <h1>Facturación</h1>
+      <p class="lead">Genera facturas y controla tus ventas</p>
+    </header>
+
+    <section class="card form-card">
+      <h3>Agregar al Carrito</h3>
+      <div class="form-row">
+        <select id="selProducto"></select>
+        <input id="cantVenta" type="number" placeholder="Cantidad" min="1" />
+        <button id="btnAddCarrito" class="btn primary">Agregar al Carrito</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Carrito de Compras</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody id="tablaFactura"></tbody>
+        </table>
+      </div>
+      
+      <div style="margin-top:16px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="btnGenerar" class="btn primary">📄 Generar Factura (PDF)</button>
+        <button id="btnImprimir" class="btn" style="background: #27ae60;">🖨️ Imprimir Factura</button>
+        <button id="btnVistaPrevia" class="btn" style="background: #8e44ad;">👁️ Vista Previa</button>
+      </div>
+      
+      <p id="mensaje" style="margin-top:12px;color:#00b894;font-weight:600;"></p>
+    </section>
+
+    <!-- Sección oculta para impresión -->
+    <section id="facturaImpresion" class="no-print-hide">
+      <div class="factura-header">
+        <h1>FACTURA DE VENTA</h1>
+        <p>Inventario Pro</p>
+      </div>
+      
+      <div class="factura-info">
+        <p><strong>Fecha:</strong> <span id="facturaFecha"></span></p>
+        <p><strong>N° Factura:</strong> <span id="facturaNumero"></span></p>
+      </div>
+      
+      <table class="factura-tabla">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody id="facturaTablaImpresion"></tbody>
+      </table>
+      
+      <div class="factura-total">
+        <p>Total de Items: <span id="facturaTotalItems"></span></p>
+      </div>
+      
+      <div class="factura-footer">
+        <p>Gracias por su compra</p>
+        <p>Inventario Pro - Sistema de Gestión</p>
+      </div>
+      
+      <div style="margin-top: 20px; text-align: center;" class="no-print">
+        <button onclick="cerrarVistaPrevia()" class="btn" style="background: #e74c3c;">❌ Cerrar Vista Previa</button>
+        <button onclick="window.print()" class="btn primary">🖨️ Imprimir Ahora</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="inventario.js"></script>
+  <script src="facturacion.js"></script>
+  <script src="global.js"></script>
+  
+  <script>
+    // Función global para cerrar vista previa
+    function cerrarVistaPrevia() {
+      document.getElementById('facturaImpresion').classList.remove('visible');
+    }
+  </script>
+</body>
+</html>

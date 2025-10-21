@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Facturación - Inventario Pro</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <!-- Estilos para impresión de TICKET -->
+  <style>
+    @media print {
+      /* Ocultar todo excepto la factura al imprimir */
+      body * {
+        visibility: hidden;
+      }
+      
+      #facturaImpresion, #facturaImpresion * {
+        visibility: visible;
+      }
+      
+      #facturaImpresion {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      
+      /* Ocultar botones en impresión */
+      .no-print {
+        display: none !important;
+      }
+      
+      /* Configuración de página para ticket */
+      @page {
+        size: 58mm auto; /* Ancho de 58mm (papel térmico de 58mm), altura automática */
+        margin: 0;
+      }
+    }
+    
+    /* Estilos para la vista previa de TICKET */
+    #facturaImpresion {
+      display: none;
+      background: white;
+      color: #000;
+      padding: 3mm 2mm; /* Padding mínimo para ticket de 58mm */
+      width: 58mm; /* Ancho exacto de 58mm */
+      margin: 20px auto;
+      border: 1px solid #ddd;
+      font-family: 'Courier New', monospace;
+      font-size: 9px; /* Tamaño de fuente reducido para ticket de 58mm */
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    #facturaImpresion.visible {
+      display: block;
+    }
+    
+    /* Encabezado del ticket */
+    .factura-header {
+      text-align: center;
+      border-bottom: 1px dashed #000;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+    }
+    
+    .factura-header h1 {
+      margin: 0 0 2px 0;
+      font-size: 11px;
+      font-weight: bold;
+      color: #000;
+    }
+    
+    .factura-header p {
+      margin: 1px 0;
+      font-size: 8px;
+      color: #000;
+    }
+    
+    /* Información de la factura */
+    .factura-info {
+      margin-bottom: 4px;
+      font-size: 8px;
+    }
+    
+    .factura-info p {
+      margin: 2px 0;
+      color: #000;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .factura-info strong {
+      font-weight: bold;
+    }
+    
+    /* Línea separadora */
+    .separador {
+      border-top: 1px dashed #000;
+      margin: 4px 0;
+    }
+    
+    /* Tabla de productos */
+    .factura-tabla {
+      width: 100%;
+      margin: 4px 0;
+      font-size: 8px;
+    }
+    
+    .factura-tabla-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      border-bottom: 1px solid #000;
+      padding-bottom: 2px;
+      margin-bottom: 2px;
+    }
+    
+    .factura-tabla-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+      border-bottom: 1px dotted #ccc;
+    }
+    
+    .factura-tabla-row:last-child {
+      border-bottom: none;
+    }
+    
+    .producto-nombre {
+      flex: 1;
+      padding-right: 4px;
+      word-wrap: break-word;
+      font-size: 8px;
+    }
+    
+    .producto-cantidad {
+      text-align: right;
+      min-width: 30px;
+      font-size: 8px;
+    }
+    
+    /* Total */
+    .factura-total {
+      text-align: right;
+      font-size: 9px;
+      font-weight: bold;
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid #000;
+      color: #000;
+    }
+    
+    .factura-total p {
+      margin: 2px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    /* Pie del ticket */
+    .factura-footer {
+      text-align: center;
+      margin-top: 6px;
+      padding-top: 4px;
+      border-top: 1px dashed #000;
+      font-size: 7px;
+      color: #666;
+    }
+    
+    .factura-footer p {
+      margin: 2px 0;
+    }
+    
+    /* Botones de la vista previa */
+    .botones-preview {
+      margin-top: 16px;
+      text-align: center;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">📦</div>
+      <div class="brand-text">
+        <h2>Inventario Pro</h2>
+      </div>
+    </div>
+    
+    <nav class="nav">
+      <a href="menu.html">🏠 Menú Principal</a>
+      <a href="inventario.html">📦 Inventario</a>
+      <a href="stock.html">📊 Stock</a>
+      <a href="facturacion.html" class="active">🧾 Facturación</a>
+      <a href="reportes.html">📑 Reportes</a>
+    </nav>
+    
+    <div class="sidebar-bottom">
+      <button id="btnDark" class="dark-toggle">🌙</button>
+      <button id="btnLogout" class="logout">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <h1>Facturación</h1>
+      <p class="lead">Genera facturas y controla tus ventas</p>
+    </header>
+
+    <section class="card form-card">
+      <h3>Agregar al Carrito</h3>
+      <div class="form-row">
+        <select id="selProducto"></select>
+        <input id="cantVenta" type="number" placeholder="Cantidad" min="1" />
+        <button id="btnAddCarrito" class="btn primary">Agregar al Carrito</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Carrito de Compras</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody id="tablaFactura"></tbody>
+        </table>
+      </div>
+      
+      <div style="margin-top:16px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <button id="btnGenerar" class="btn primary">📄 Generar Factura (PDF)</button>
+        <button id="btnImprimir" class="btn" style="background: #27ae60;">🖨️ Imprimir Ticket</button>
+        <button id="btnVistaPrevia" class="btn" style="background: #8e44ad;">👁️ Vista Previa</button>
+      </div>
+      
+      <p id="mensaje" style="margin-top:12px;color:#00b894;font-weight:600;"></p>
+    </section>
+
+    <!-- Sección oculta para impresión en formato TICKET -->
+    <section id="facturaImpresion" class="no-print-hide">
+      <!-- Encabezado del ticket -->
+      <div class="factura-header">
+        <h1>INVENTARIO PRO</h1>
+        <p>Sistema de Gestión</p>
+      </div>
+      
+      <!-- Información de la factura -->
+      <div class="factura-info">
+        <p><strong>FACTURA SIMPLIFICADA</strong></p>
+        <p>
+          <span>Nº:</span>
+          <span id="facturaNumero"></span>
+        </p>
+        <p>
+          <span>Fecha:</span>
+          <span id="facturaFecha"></span>
+        </p>
+      </div>
+      
+      <!-- Separador -->
+      <div class="separador"></div>
+      
+      <!-- Encabezado de la tabla -->
+      <div class="factura-tabla">
+        <div class="factura-tabla-header">
+          <span class="producto-nombre">PRODUCTO</span>
+          <span class="producto-cantidad">CANT.</span>
+        </div>
+        
+        <!-- Productos -->
+        <div id="facturaTablaImpresion"></div>
+      </div>
+      
+      <!-- Separador -->
+      <div class="separador"></div>
+      
+      <!-- Total -->
+      <div class="factura-total">
+        <p>
+          <span>TOTAL ITEMS:</span>
+          <span id="facturaTotalItems"></span>
+        </p>
+      </div>
+      
+      <!-- Pie del ticket -->
+      <div class="factura-footer">
+        <p>*** GRACIAS POR SU VISITA ***</p>
+        <p>Inventario Pro</p>
+        <p id="facturaReferencia"></p>
+      </div>
+      
+      <!-- Botones (solo visibles en vista previa, no en impresión) -->
+      <div class="botones-preview no-print">
+        <button onclick="cerrarVistaPrevia()" class="btn" style="background: #e74c3c; font-size: 0.9rem; padding: 10px 16px;">❌ Cerrar</button>
+        <button onclick="window.print()" class="btn primary" style="font-size: 0.9rem; padding: 10px 16px;">🖨️ Imprimir</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="inventario.js"></script>
+  <script src="global.js"></script>
+  
+  <script>
+    // Función global para cerrar vista previa
+    function cerrarVistaPrevia() {
+      document.getElementById('facturaImpresion').classList.remove('visible');
+    }
+  </script>
+  
+  <!-- Script de facturación adaptado para formato ticket -->
+  <script>
+(function(){
+  let carrito = [];
+  let numeroFactura = 1;
+  
+  function getInventario(){ 
+    return JSON.parse(localStorage.getItem('inventario')) || []; 
+  }
+  
+  function setInventario(arr){ 
+    localStorage.setItem('inventario', JSON.stringify(arr)); 
+    window.dispatchEvent(new Event('inventarioActualizado')); 
+  }
+  
+  function getNumeroFactura() {
+    const num = parseInt(localStorage.getItem('numeroFactura') || '1', 10);
+    return num;
+  }
+  
+  function incrementarNumeroFactura() {
+    const num = getNumeroFactura() + 1;
+    localStorage.setItem('numeroFactura', num.toString());
+    return num;
+  }
+
+  function renderCarrito(){ 
+    const tbody = document.getElementById('tablaFactura'); 
+    if(!tbody) return; 
+    tbody.innerHTML = carrito.map(c=>`<tr><td>${escapeHtml(c.producto)}</td><td>${c.cantidad}</td></tr>`).join(''); 
+  }
+  
+  function escapeHtml(s){ 
+    return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m])); 
+  }
+  
+  function prepararFacturaParaImpresion() {
+    if(carrito.length === 0) {
+      alert('⚠️ El carrito está vacío');
+      return false;
+    }
+    
+    const facturaFecha = document.getElementById('facturaFecha');
+    const facturaNumero = document.getElementById('facturaNumero');
+    const facturaTabla = document.getElementById('facturaTablaImpresion');
+    const facturaTotalItems = document.getElementById('facturaTotalItems');
+    const facturaReferencia = document.getElementById('facturaReferencia');
+    
+    if(!facturaFecha || !facturaNumero || !facturaTabla || !facturaTotalItems) {
+      console.error('No se encontraron los elementos de la factura');
+      return false;
+    }
+    
+    // Establecer fecha y hora
+    const ahora = new Date();
+    facturaFecha.textContent = ahora.toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+    // Establecer número de factura
+    numeroFactura = getNumeroFactura();
+    facturaNumero.textContent = String(numeroFactura).padStart(6, '0');
+    
+    // Llenar tabla de productos en formato ticket
+    let total = 0;
+    facturaTabla.innerHTML = carrito.map(c => {
+      total += c.cantidad;
+      return `<div class="factura-tabla-row">
+        <span class="producto-nombre">${escapeHtml(c.producto)}</span>
+        <span class="producto-cantidad">${c.cantidad}</span>
+      </div>`;
+    }).join('');
+    
+    // Establecer total
+    facturaTotalItems.textContent = total;
+    
+    // Referencia
+    facturaReferencia.textContent = `Ref: ${String(numeroFactura).padStart(6, '0')}`;
+    
+    return true;
+  }
+
+  window.addEventListener('DOMContentLoaded', ()=>{
+    const sel = document.getElementById('selProducto');
+    
+    function fillSelect(){ 
+      const inv = getInventario(); 
+      if(!sel) return; 
+      sel.innerHTML = inv.map(p=>`<option value="${escapeHtml(p.id)}">${escapeHtml(p.nombre)} (${escapeHtml(p.id)}) - Stock: ${p.cantidad}</option>`).join(''); 
+    }
+    
+    fillSelect();
+    window.addEventListener('inventarioActualizado', fillSelect);
+
+    // Agregar al carrito
+    document.getElementById('btnAddCarrito')?.addEventListener('click', ()=>{
+      const id = document.getElementById('selProducto')?.value; 
+      const cantidad = parseInt(document.getElementById('cantVenta')?.value,10);
+      
+      if(!id || !Number.isFinite(cantidad) || cantidad<=0) return alert('Selecciona producto y cantidad válidos');
+      
+      const inv = getInventario(); 
+      const item = inv.find(p=>p.id===id);
+      
+      if(!item || item.cantidad < cantidad) return alert('Stock insuficiente');
+      
+      item.cantidad -= cantidad;
+      setInventario(inv);
+      
+      carrito.push({producto:`${item.nombre} (${item.id})`,cantidad}); 
+      renderCarrito();
+      
+      document.getElementById('cantVenta').value='';
+    });
+
+    // Generar PDF
+    document.getElementById('btnGenerar')?.addEventListener('click', async ()=>{
+      if(carrito.length===0) return alert('Carrito vacío');
+      
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFontSize(16); 
+      doc.text('Factura de Venta',14,20);
+      
+      doc.setFontSize(10); 
+      doc.text('Fecha: '+new Date().toLocaleString(),14,28);
+      doc.text('Nº Factura: '+String(getNumeroFactura()).padStart(6,'0'),14,34);
+      
+      let y=45; 
+      doc.text('Producto',14,y); 
+      doc.text('Cantidad',110,y); 
+      y+=6; 
+      doc.line(14,y,196,y); 
+      y+=6;
+      
+      let total=0; 
+      carrito.forEach(c=>{ 
+        doc.text(c.producto,14,y); 
+        doc.text(String(c.cantidad),110,y); 
+        y+=8; 
+        total+=c.cantidad; 
+      });
+      
+      y+=8; 
+      doc.text('Total items: '+total,14,y);
+      
+      doc.save('factura_'+String(numeroFactura).padStart(6,'0')+'.pdf');
+      
+      incrementarNumeroFactura();
+      
+      carrito=[]; 
+      renderCarrito(); 
+      window.dispatchEvent(new Event('inventarioActualizado'));
+      
+      document.getElementById('mensaje') && (document.getElementById('mensaje').textContent='Factura PDF generada ✅');
+      
+      setTimeout(() => {
+        document.getElementById('mensaje') && (document.getElementById('mensaje').textContent='');
+      }, 3000);
+    });
+
+    // Vista previa de impresión
+    document.getElementById('btnVistaPrevia')?.addEventListener('click', ()=>{
+      if(prepararFacturaParaImpresion()) {
+        document.getElementById('facturaImpresion').classList.add('visible');
+        document.getElementById('facturaImpresion').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    // Imprimir directamente
+    document.getElementById('btnImprimir')?.addEventListener('click', ()=>{
+      if(carrito.length === 0) {
+        return alert('⚠️ El carrito está vacío');
+      }
+      
+      if(prepararFacturaParaImpresion()) {
+        document.getElementById('facturaImpresion').classList.add('visible');
+        
+        if(confirm('¿Desea imprimir el ticket?\n\nAsegúrese de que su impresora esté conectada y lista.')) {
+          setTimeout(() => {
+            window.print();
+            
+            setTimeout(() => {
+              incrementarNumeroFactura();
+              
+              carrito = [];
+              renderCarrito();
+              window.dispatchEvent(new Event('inventarioActualizado'));
+              
+              document.getElementById('facturaImpresion').classList.remove('visible');
+              
+              const mensaje = document.getElementById('mensaje');
+              if(mensaje) {
+                mensaje.textContent = 'Ticket impreso ✅';
+                setTimeout(() => {
+                  mensaje.textContent = '';
+                }, 3000);
+              }
+            }, 1000);
+          }, 500);
+        } else {
+          document.getElementById('facturaImpresion').classList.remove('visible');
+        }
+      }
+    });
+  });
+})();
+  </script>
+</body>
+</html>

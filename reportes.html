@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<!-- Declaración del tipo de documento HTML5 -->
+
+<html lang="es">
+<!-- Elemento raíz con idioma español -->
+
+<head>
+  <!-- Sección de metadatos del documento -->
+  
+  <meta charset="utf-8" />
+  <!-- Codificación UTF-8 para caracteres especiales -->
+  
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Configuración responsive para dispositivos móviles -->
+  
+  <title>Reportes - Inventario Pro</title>
+  <!-- Título de la pestaña del navegador -->
+  
+  <link rel="stylesheet" href="styles.css">
+  <!-- Enlace al archivo CSS externo -->
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Carga la biblioteca SheetJS desde CDN para trabajar con archivos Excel
+       Esta librería permite crear, leer y exportar archivos .xlsx -->
+</head>
+
+<body>
+  <!-- Cuerpo del documento -->
+  
+  <aside class="sidebar">
+    <!-- Barra lateral de navegación -->
+    
+    <div class="brand">
+      <!-- Contenedor de la marca/logo -->
+      
+      <div class="logo">📦</div>
+      <!-- Emoji del logo (caja de paquete) -->
+      
+      <div class="brand-text">
+        <!-- Contenedor del texto de marca -->
+        
+        <h2>Inventario Pro</h2>
+        <!-- Nombre de la aplicación -->
+      </div>
+    </div>
+    
+    <nav class="nav">
+      <!-- Elemento de navegación semántico -->
+      
+      <a href="menu.html">🏠 Menú Principal</a>
+      <!-- Enlace al menú principal -->
+      
+      <a href="inventario.html">📦 Inventario</a>
+      <!-- Enlace a la página de inventario -->
+      
+      <a href="stock.html">📊 Stock</a>
+      <!-- Enlace a la página de stock -->
+      
+      <a href="facturacion.html">🧾 Facturación</a>
+      <!-- Enlace a la página de facturación -->
+      
+      <a href="reportes.html" class="active">📑 Reportes</a>
+      <!-- Enlace a reportes (página actual) marcado como "active" -->
+    </nav>
+    
+    <div class="sidebar-bottom">
+      <!-- Contenedor inferior de la barra lateral -->
+      
+      <button id="btnDark" class="dark-toggle">🌙</button>
+      <!-- Botón para alternar modo oscuro/claro -->
+      
+      <button id="btnLogout" class="logout">Cerrar sesión</button>
+      <!-- Botón para cerrar sesión -->
+    </div>
+  </aside>
+
+  <main class="content">
+    <!-- Contenedor principal del contenido -->
+    
+    <header class="topbar">
+      <!-- Encabezado de la página -->
+      
+      <h1>Reportes e Informes</h1>
+      <!-- Título principal -->
+      
+      <p class="lead">Exporta tu inventario a Excel con formato profesional</p>
+      <!-- Párrafo descriptivo destacado -->
+    </header>
+
+    <section class="card">
+      <!-- Sección con estilo de tarjeta para el botón de exportación -->
+      
+      <h3>📊 Exportar Inventario a Excel</h3>
+      <!-- Subtítulo con emoji -->
+      
+      <p style="color:var(--muted);margin-bottom:20px;">
+        <!-- Párrafo descriptivo con:
+             - color: usa variable CSS para color tenue
+             - margin-bottom: espacio de 20px debajo del párrafo -->
+        
+        Descarga tu inventario completo en formato <strong>Excel (.xlsx)</strong> con tablas organizadas, formato profesional y resumen automático de estadísticas.
+        <!-- Texto explicativo con <strong> para resaltar "Excel (.xlsx)" -->
+      </p>
+      
+      <button onclick="exportarInventario()" class="btn primary" style="font-size:1.05rem;padding:14px 24px;">
+        <!-- Botón de exportación con:
+             - onclick: llama a la función exportarInventario() al hacer click
+             - class="btn primary": estilos de botón primario
+             - font-size: tamaño de fuente ligeramente mayor
+             - padding: espaciado interno (vertical horizontal) -->
+        
+        📥 Descargar Excel (.xlsx)
+        <!-- Texto del botón con emoji de descarga -->
+      </button>
+    </section>
+
+    <section class="card">
+      <!-- Nueva sección que describe el contenido del archivo -->
+      
+      <h3>📋 Contenido del Archivo Excel</h3>
+      <!-- Subtítulo -->
+      
+      <div style="background:rgba(0,0,0,0.2);padding:20px;border-radius:12px;border:var(--glass-border);">
+        <!-- Contenedor con estilos inline:
+             - background: fondo negro semi-transparente
+             - padding: espaciado interno de 20px
+             - border-radius: bordes redondeados de 12px
+             - border: usa variable CSS para borde tipo vidrio -->
+        
+        <p style="margin:0 0 16px 0;color:var(--text-primary);font-weight:600;">
+          <!-- Párrafo con:
+               - margin: 0 arriba, 16px abajo, 0 lados
+               - color: variable CSS para texto primario
+               - font-weight: negrita (600) -->
+          
+          El archivo Excel incluye las siguientes columnas organizadas:
+          <!-- Texto introductorio -->
+        </p>
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;color:var(--text-muted);line-height:1.8;">
+          <!-- Contenedor con CSS Grid:
+               - display:grid: activa el sistema de grilla
+               - grid-template-columns: columnas que se ajustan automáticamente
+                 - repeat: repite el patrón
+                 - auto-fit: ajusta automáticamente el número de columnas
+                 - minmax(200px,1fr): mínimo 200px, máximo 1 fracción del espacio
+               - gap: espacio de 12px entre elementos
+               - color: texto tenue
+               - line-height: altura de línea 1.8 veces el tamaño de fuente -->
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <!-- Tarjeta individual con fondo azul semi-transparente -->
+            
+            <strong style="color:var(--accent);">📌 Código ID</strong>
+            <!-- Título en negrita con color de acento -->
+            
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Identificador único</p>
+            <!-- Descripción con margen superior de 4px y tamaño de fuente reducido -->
+          </div>
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <strong style="color:var(--accent);">📦 Nombre</strong>
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Producto completo</p>
+          </div>
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <strong style="color:var(--accent);">🏢 Empresa</strong>
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Proveedor</p>
+          </div>
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <strong style="color:var(--accent);">📊 Cantidad</strong>
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Stock disponible</p>
+          </div>
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <strong style="color:var(--accent);">🎯 Estado</strong>
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Nivel de stock</p>
+          </div>
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <strong style="color:var(--accent);">📅 Fecha</strong>
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Día de registro</p>
+          </div>
+          
+          <div style="background:rgba(0,170,255,0.1);padding:12px;border-radius:8px;border:1px solid rgba(0,170,255,0.2);">
+            <strong style="color:var(--accent);">🕐 Hora</strong>
+            <p style="margin:4px 0 0 0;font-size:0.85rem;">Hora de registro</p>
+          </div>
+        </div>
+        
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);">
+          <!-- Contenedor separado con:
+               - margin-top: espacio de 20px arriba
+               - padding-top: relleno de 20px arriba
+               - border-top: línea separadora semi-transparente en la parte superior -->
+          
+          <p style="margin:0 0 12px 0;color:var(--text-primary);font-weight:600;">
+            <!-- Párrafo con margen inferior de 12px, color primario y negrita -->
+            
+            📈 Resumen Automático al Final:
+            <!-- Título del resumen con emoji -->
+          </p>
+          
+          <ul style="color:var(--text-muted);line-height:1.8;margin:0;padding-left:20px;font-size:0.95rem;">
+            <!-- Lista no ordenada con:
+                 - color tenue
+                 - altura de línea 1.8
+                 - sin margen
+                 - padding izquierdo de 20px para la indentación
+                 - tamaño de fuente ligeramente menor -->
+            
+            <li>Total de productos registrados</li>
+            <!-- Primer ítem de la lista -->
+            
+            <li>Total de unidades en stock</li>
+            <!-- Segundo ítem -->
+            
+            <li>Promedio de stock por producto</li>
+            <!-- Tercer ítem -->
+            
+            <li>Productos en estado crítico</li>
+            <!-- Cuarto ítem -->
+            
+            <li>Productos sin stock</li>
+            <!-- Quinto ítem -->
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <!-- Nueva sección sobre ventajas del formato Excel -->
+      
+      <h3>💡 Ventajas del Formato Excel</h3>
+      <!-- Subtítulo con emoji de bombilla (idea) -->
+      
+      <div class="grid-2" style="gap:16px;">
+        <!-- Contenedor con grilla de 2 columnas y espacio de 16px entre elementos -->
+        
+        <div style="background:rgba(46,204,113,0.15);padding:16px;border-radius:10px;border:1px solid rgba(46,204,113,0.3);">
+          <!-- Tarjeta con fondo verde semi-transparente -->
+          
+          <div style="font-size:1.8rem;margin-bottom:8px;">✅</div>
+          <!-- Emoji grande con margen inferior -->
+          
+          <strong style="color:#c8ffe0;display:block;margin-bottom:6px;">Formato Nativo</strong>
+          <!-- Título en negrita, color verde claro, como bloque con margen inferior -->
+          
+          <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">
+            <!-- Párrafo descriptivo sin margen, color tenue, fuente reducida -->
+            Archivo .xlsx que se abre directamente en Excel sin conversiones
+          </p>
+        </div>
+        
+        <div style="background:rgba(0,170,255,0.15);padding:16px;border-radius:10px;border:1px solid rgba(0,170,255,0.3);">
+          <!-- Tarjeta con fondo azul semi-transparente -->
+          
+          <div style="font-size:1.8rem;margin-bottom:8px;">📊</div>
+          <strong style="color:#8dd5ff;display:block;margin-bottom:6px;">Tablas Organizadas</strong>
+          <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">
+            Columnas con anchos optimizados y encabezados claros
+          </p>
+        </div>
+        
+        <div style="background:rgba(241,196,15,0.15);padding:16px;border-radius:10px;border:1px solid rgba(241,196,15,0.3);">
+          <!-- Tarjeta con fondo amarillo semi-transparente -->
+          
+          <div style="font-size:1.8rem;margin-bottom:8px;">🔍</div>
+          <strong style="color:#fffacd;display:block;margin-bottom:6px;">Filtros y Ordenamiento</strong>
+          <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">
+            Usa las funciones de Excel para analizar tus datos
+          </p>
+        </div>
+        
+        <div style="background:rgba(155,89,182,0.15);padding:16px;border-radius:10px;border:1px solid rgba(155,89,182,0.3);">
+          <!-- Tarjeta con fondo morado semi-transparente -->
+          
+          <div style="font-size:1.8rem;margin-bottom:8px;">📱</div>
+          <strong style="color:#e8d4ff;display:block;margin-bottom:6px;">Compatible</strong>
+          <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">
+            Funciona en Excel, Google Sheets, LibreOffice y más
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <!-- Sección sobre estados de stock -->
+      
+      <h3>🎯 Estados de Stock en el Reporte</h3>
+      <!-- Subtítulo -->
+      
+      <div style="background:rgba(0,0,0,0.2);padding:20px;border-radius:12px;border:var(--glass-border);">
+        <!-- Contenedor con fondo oscuro semi-transparente -->
+        
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+          <!-- Grilla que se ajusta automáticamente con mínimo 180px por columna -->
+          
+          <div style="text-align:center;padding:12px;background:rgba(149,165,166,0.1);border-radius:8px;">
+            <!-- Tarjeta centrada con fondo gris -->
+            
+            <span class="badge badge-sin" style="margin-bottom:8px;">SIN STOCK</span>
+            <!-- Badge (etiqueta) indicando "sin stock" -->
+            
+            <p style="margin:8px 0 0 0;color:var(--text-muted);font-size:0.85rem;">0 unidades</p>
+            <!-- Descripción del rango -->
+          </div>
+          </div>
+          <div style="text-align:center;padding:12px;background:rgba(231,76,60,0.1);border-radius:8px;">
+            <!-- Tarjeta centrada con fondo rojo semi-transparente -->
+            
+            <span class="badge badge-bajo" style="margin-bottom:8px;">CRÍTICO</span>
+            <!-- Badge rojo indicando stock crítico -->
+            
+            <p style="margin:8px 0 0 0;color:var(--text-muted);font-size:0.85rem;">&lt; 30 unidades</p>
+            <!-- Descripción: menor a 30 unidades
+                 &lt; es la entidad HTML para el símbolo < (menor que) -->
+          </div>
+          
+          <div style="text-align:center;padding:12px;background:rgba(241,196,15,0.1);border-radius:8px;">
+            <!-- Tarjeta con fondo amarillo semi-transparente -->
+            
+            <span class="badge badge-medio" style="margin-bottom:8px;">BAJO</span>
+            <!-- Badge amarillo para stock bajo -->
+            
+            <p style="margin:8px 0 0 0;color:var(--text-muted);font-size:0.85rem;">30 - 50 unidades</p>
+            <!-- Rango: entre 30 y 50 unidades -->
+          </div>
+          
+          <div style="text-align:center;padding:12px;background:rgba(241,196,15,0.1);border-radius:8px;">
+            <!-- Otra tarjeta amarilla -->
+            
+            <span class="badge badge-medio" style="margin-bottom:8px;">MEDIO</span>
+            <!-- Badge para stock medio -->
+            
+            <p style="margin:8px 0 0 0;color:var(--text-muted);font-size:0.85rem;">51 - 100 unidades</p>
+            <!-- Rango: entre 51 y 100 unidades -->
+          </div>
+          
+          <div style="text-align:center;padding:12px;background:rgba(46,204,113,0.1);border-radius:8px;">
+            <!-- Tarjeta con fondo verde semi-transparente -->
+            
+            <span class="badge badge-alto" style="margin-bottom:8px;">ALTO</span>
+            <!-- Badge verde para stock alto -->
+            
+            <p style="margin:8px 0 0 0;color:var(--text-muted);font-size:0.85rem;">&gt; 100 unidades</p>
+            <!-- Descripción: mayor a 100 unidades
+                 &gt; es la entidad HTML para el símbolo > (mayor que) -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <!-- Sección con instrucciones de uso -->
+      
+      <h3>📖 Instrucciones de Uso</h3>
+      <!-- Subtítulo con emoji de libro -->
+      
+      <div style="background:rgba(0,0,0,0.2);padding:20px;border-radius:12px;border:var(--glass-border);">
+        <!-- Contenedor con fondo oscuro y borde tipo vidrio -->
+        
+        <ol style="color:var(--text-muted);line-height:2;margin:0;padding-left:20px;">
+          <!-- Lista ordenada (numerada) con:
+               - color tenue
+               - line-height: altura de línea 2 (doble espacio)
+               - sin margen
+               - padding-left: indentación de 20px -->
+          
+          <li><strong style="color:var(--text-primary);">Haz clic</strong> en el botón "Descargar Excel"</li>
+          <!-- Paso 1: texto importante en negrita con color primario -->
+          
+          <li><strong style="color:var(--text-primary);">Espera</strong> a que se descargue el archivo .xlsx</li>
+          <!-- Paso 2 -->
+          
+          <li><strong style="color:var(--text-primary);">Abre</strong> el archivo con Microsoft Excel o tu programa preferido</li>
+          <!-- Paso 3 -->
+          
+          <li><strong style="color:var(--text-primary);">Analiza</strong> los datos, aplica filtros u ordena columnas</li>
+          <!-- Paso 4 -->
+          
+          <li><strong style="color:var(--text-primary);">Revisa</strong> el resumen al final de la tabla con estadísticas</li>
+          <!-- Paso 5 -->
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <script src="reportes.js"></script>
+  <!-- Carga el archivo JavaScript con la lógica de exportación a Excel -->
+  
+  <script src="global.js"></script>
+  <!-- Carga el archivo JavaScript con funciones globales (sesión, modo oscuro) -->
+</body>
+</html>
